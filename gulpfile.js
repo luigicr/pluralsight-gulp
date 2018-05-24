@@ -38,6 +38,25 @@ gulp.task('less-watcher', function () {
     
 });
 
+gulp.task('wiredep', function() {
+    log('### wiredep inject bower css and js ###');
+    var options = config.getWiredepDefaultOtions();
+    var wiredep = require('wiredep').stream;
+    return gulp
+    .src(config.index)
+    .pipe(wiredep(options))
+    .pipe($.inject(gulp.src(config.js)))
+    .pipe(gulp.dest(config.client));
+});
+
+gulp.task('inject', ['wiredep', 'styles'], function() {
+    log('### inject custom css ###');
+    return gulp
+        .src(config.index)
+        .pipe($.inject(gulp.src(config.css)))
+        .pipe(gulp.dest(config.client));
+});
+
 ////////////////
 function errorLogger(error) {
     log('*** Start of Error ***');
